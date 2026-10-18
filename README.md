@@ -42,6 +42,13 @@
 <!-- Your community, and what your classifier sorts posts into. Three or four
      sentences. -->
 
+The community is r/truegaming, a public discussion subreddit about games in
+general, not tied to one title or release. Its posts range from ones that
+argue from numbers and named mechanics to confident claims with nothing behind
+them. The classifier sorts each post by what its argument rests on: a specific,
+checkable fact (`analysis`), nothing beyond confidence (`hot_take`), or the
+author's own experience (`personal_account`).
+
 
 
 ---
@@ -54,33 +61,65 @@
      The decision rule is worth a point on its own and it's the thing most
      people leave out. Every taxonomy has a hardest boundary. Name yours. -->
 
-### `label_one`
+### `analysis`
 
-**Definition:**
-
-**Example 1:**
->
-
-**Example 2:**
->
-
-### `label_two`
-
-**Definition:**
+**Definition:** Backs its claim with at least one specific, externally
+checkable fact: a number, date, named source or direct quote that a reader
+could verify without trusting the author.
 
 **Example 1:**
->
+> Spider-Man fast-travel post: 66.43% of players earned the trophy, and 71.91%
+> finished Act 3.
 
 **Example 2:**
->
+> Fortnite post: frame rate dropped from ~138 fps to 60–80 after Lumen was
+> enabled.
+
+### `hot_take`
+
+**Definition:** States a claim with no specific, checkable support, including
+vague gestures ("everyone I know") and bare examples with no detail.
+
+**Example 1:**
+> "Pre-ordering GTA 6 right now is madness."
+
+**Example 2:**
+> "Most players don't actually want freedom; they want reassurance."
+
+### `personal_account`
+
+**Definition:** The only evidence is the author's own experience (their
+playtime, spending or reactions), which nobody else can check.
+
+**Example 1:**
+> The "joyless survival horror" post: a verdict resting on the author's own
+> playthrough.
+
+**Example 2:**
+> The $1,400 microtransaction audit: numbers drawn only from the author's own
+> purchase history.
 
 ### The hardest boundary
 
-**Which two labels:**
+**Which two labels:** `analysis` vs `personal_account`. The $1,400 audit is
+full of numbers but none can be checked from outside the post.
 
 **The decision rule I used every time:**
-<!-- e.g. "If the post names a specific checkable fact, it's `analysis`, even
-     if the tone is heated." -->
+A fact counts as checkable only if a reader could verify it without trusting
+the author. A public stat, patch note, or benchmark with a named setup
+qualifies. The author's own spending, hours or "I noticed" does not, so it is
+`personal_account` even when numbers are present. Apply in order:
+
+1. If the post has a specific, externally checkable fact and its argument rests
+   on it, it is `analysis`. A fact that is only decoration on an unrelated
+   conclusion doesn't count.
+2. Otherwise, if the author's own experience is the main evidence, it is
+   `personal_account`.
+3. Otherwise it is `hot_take`.
+
+If a post has both a checkable fact and personal experience, rule 1 wins.
+"Specific" means a number, date, named source or quote. "Glowing reviews" or
+"Hades restarts fast" is not specific.
 
 
 
