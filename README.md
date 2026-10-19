@@ -130,19 +130,20 @@ If a post has both a checkable fact and personal experience, rule 1 wins.
 <!-- Where you collected from, how you labelled, your counts, and three hard
      cases. -->
 
-**Where the posts came from:**
+**Where the posts came from:** Public text posts from r/truegaming. I saved five listing pages as JSON (hot, new, and three pages of the main listing), which gave 500 entries and 340 unique posts. I removed stickied posts, "casual talk" megathreads, academic survey recruitment posts and pure help-or-recommendation questions, since none of those makes a claim. The posts are whole, title plus body. I only cleaned HTML entities, and I didn't trim any post. The result is one unsplit `labels.csv` with 272 posts.
 
-**How I labelled them:** <!-- Cold first? Pre-labelled with AI and corrected?
-Say so plainly — the disclosure is required, not penalised. -->
+**How I labelled them:** Cold first. I labelled 20 posts myself on paper, with no AI and no tools, before seeing any AI label. Those rows say "cold" in the note column. Four posts from my original cold set were dropped as non-takes (two questions, one survey post and one advice request), so I labelled four fresh posts cold to bring the total back to 20. The other 252 rows were pre-labelled by an AI tool (Claude) using the definitions in the Label Taxonomy section and the decision rule below it, and say "pre-labelled" in the note column. The AI read the opening of each post plus its numbers and links, not always the full text. I did review those 252 rows and agreed with them. The 10 hardest rows say "hard case" in the note column.
 
 **Counts per label:**
 
 | Label | Count | Share |
 |---|---|---|
-|  |  |  |
-|  |  |  |
-|  |  |  |
-| **Total** |  | 100% |
+| `hot_take` | 144 | 52.9% |
+| `personal_account` | 97 | 35.7% |
+| `analysis` | 31 | 11.4% |
+| **Total** | 272 | 100% |
+
+No label is above 70%. `analysis` is the thin one: with about 31 examples, only about 4 land in the test split, so its F1 will move a lot between seeds.
 
 **Three hard cases**
 
@@ -150,25 +151,25 @@ Say so plainly — the disclosure is required, not penalised. -->
      been, and what you chose. These are worth more than the easy 190. -->
 
 **1.**
-> *The post:*
+> *The post:* "Why Is Game Optimization Getting Worse?", written by a developer with 13 years in the industry. It says traditional content costs like polycount and texture resolution are "only like 30-40% of your frame time now," and the other "60-70%" is black-box systems like Lumen, Nanite and TAA. It also says day-one patches can be "50+ gigabytes."
 >
-> *Could have been:*
+> *Could have been:* `analysis` or `personal_account`.
 >
-> *I chose, because:*
+> *I chose:* `personal_account`, because the post is dense with numbers, but none can be checked from outside it. The percentages are the author's own estimates from their own projects, and a reader has to trust the author's career to accept them. My rule says numbers that come only from the author's own experience don't count as checkable, so this is the same call as the $1,400 audit.
 
 **2.**
-> *The post:*
+> *The post:* "The best performance category in TGA always doesn't make a lot of sense." It says Expedition 33 has three nominations in the category, while Ghost of Yotei, Silent Hill F and Indiana Jones have one each. All three E33 nominees gave voice performances only, while the Ghost of Yotei and Silent Hill F nominees gave motion capture, physical likeness and voice. It concludes the award is "quite unfair."
 >
-> *Could have been:*
+> *Could have been:* `analysis` or `hot_take`.
 >
-> *I chose, because:*
+> *I chose:* `analysis`, because anyone can check the nomination counts and who did voice versus mocap work, and the argument rests on exactly those facts. The "unfair" verdict is opinion, but rule 1 says a checkable fact the argument depends on wins. Without those specifics it would be a plain `hot_take`.
 
 **3.**
-> *The post:*
+> *The post:* "Utility magic that's useful outside of combat should be more common in games." It says that in Skyrim "fire or ice magic will never interact with" the survival system, that in Bioshock 1 the plasmids' "only real use is making combat sections easier," and that Baldur's Gate 3 lets magic feel "like a way to interact with the world."
 >
-> *Could have been:*
+> *Could have been:* `hot_take` or `analysis`.
 >
-> *I chose, because:*
+> *I chose:* `hot_take`, because the post names three games and describes their mechanics in some detail, which makes it feel like evidence. But none of it is a number, date, named source or quote. Under my "bare examples with no detail" wording it's still unsupported claims, and my definition of "specific" is a number, date, named source or quote, so concrete examples alone don't make a post `analysis`.
 
 ---
 

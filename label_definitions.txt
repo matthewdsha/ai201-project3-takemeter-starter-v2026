@@ -5,6 +5,6 @@
 #
 # Delete the examples below and put yours in.
 
-analysis: makes an argument backed by a specific, checkable fact
-hot_take: a confident claim with no support offered
-reaction: an immediate response to something that just happened
+analysis: backs its claim with at least one specific, externally checkable fact (a number, date, named source or direct quote) that a reader could verify without trusting the author
+hot_take: states a claim with no specific, checkable support, including vague gestures ("everyone I know") and bare examples with no detail
+personal_account: the only evidence is the author's own experience (their playtime, spending or reactions), which nobody else can check
