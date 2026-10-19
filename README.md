@@ -177,15 +177,21 @@ No label is above 70%. `analysis` is the thin one: with about 31 examples, only 
 
 <!-- Your starting model, your settings, and anything you changed and why. -->
 
-**Base model:**
+**Base model:** `distilbert-base-uncased`
 
-**Settings:** <!-- epochs, learning rate, batch size, seed -->
+**Settings:** 3 epochs, learning rate 2e-5, batch size 16, seed 42, max length 128 tokens. Trained on an Apple Silicon GPU (MPS).
 
-**Anything I changed from the defaults, and why:**
+**Anything I changed from the defaults, and why:** Nothing. I ran the notebook's default settings, because this unit is about getting a first trained model and a baseline.
 
-**Split sizes:** <!-- train / val / test, and per-label counts in the test
-split. If a label had fewer than about 8 in test, say so — it explains a lot
-of next unit's variance. -->
+**Split sizes:** 190 train / 41 validation / 41 test, from the notebook's 70/15/15 split of the 272 rows. Per-label counts:
+
+| Label | Train | Val | Test |
+|---|---|---|---|
+| `analysis` | 22 | 4 | 5 |
+| `hot_take` | 100 | 22 | 22 |
+| `personal_account` | 68 | 15 | 14 |
+
+`analysis` has only 5 examples in the test split, fewer than about 8, so its F1 will move a lot between seeds and explains much of next unit's variance.
 
 
 
@@ -202,17 +208,18 @@ of next unit's variance. -->
 
 **Moment 1**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I gave Claude my three definitions and my decision rule and asked it to pre-label the r/truegaming posts I had collected.
+- *What came back:* A label for every post. After the first pass only about 9% were `analysis`, because I had filtered out posts over 4,500 characters and those long posts held most of the numbers, quotes and named sources. Claude went back to the long posts I had set aside and labelled those too, which raised `analysis` to about 11%.
+- *What I changed:* I read each pre-labelled row and agreed with the label. I also decided the dataset keeps those long posts whole instead of trimming them.
 
 **Moment 2**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I wrote my five acceptance criteria first, then asked an AI, for each target, for one reason it might turn out too easy and one reason it might turn out too hard, without it telling me which was more likely or suggesting different numbers. I followed up by asking whether each criterion could be checked by someone who couldn't ask me what I meant.
+- *What came back:* It told me where my criteria fell short and where my guesses were good. It said some of my targets needed tweaking to be more realistic but still fair, and that I needed to be more specific in how the criteria were worded.
+- *What I changed:* I followed its advice. I tweaked some of my targets, and I rewrote the criteria to be more specific so someone else could check each one without asking me.
 
 **Pre-labelling disclosure:**
+252 of the 272 rows were pre-labelled by an AI tool (Claude) using the definitions in the Label Taxonomy section, and are marked "pre-labelled" in the note column. The AI read the opening of each post plus its numbers and links, not always the full text. I reviewed every one of those 252 rows and agreed with the label. The other 20 rows are my cold labels, written on paper with no AI and no tools before I saw any AI label, and are marked "cold".
 
 <!-- ═══════════════════════ UNIT 6 — THE TEST ═══════════════════════
 
