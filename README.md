@@ -235,20 +235,19 @@ No label is above 70%. `analysis` is the thin one: with about 31 examples, only 
 
 | Measure | Baseline | Trained | Difference |
 |---|---|---|---|
-| Overall accuracy |  |  |  |
-| Macro F1 |  |  |  |
-| F1 — `label_one` |  |  |  |
-| F1 — `label_two` |  |  |  |
+| Overall accuracy | 0.195 | 0.561 | +0.366 |
+| Macro F1 | 0.164 | 0.312 | +0.148 |
+| F1 — `analysis` | 0.158 | 0.000 | -0.158 |
+| F1 — `hot_take` | 0.333 | 0.700 | +0.367 |
+| F1 — `personal_account` | 0.000 | 0.235 | +0.235 |
+
+Baseline: `facebook/bart-large-mnli`, zero-shot, scored on `test_split.csv` (the same 41 posts as the trained model, so no fallback sample). Baseline run with my label definitions. A second run with bare label names only scored accuracy 0.463, macro F1 0.410 (`baseline_results_bare_names.json`).
 
 **What I predicted before I looked:**
-<!-- Milestone 1 asks you to write this BEFORE seeing the trained numbers. A
-     prediction made afterwards isn't one. -->
+I predicted the model would beat the baseline most on `analysis` because it is easy to identify as it needs a fact.
 
 **What the gap actually means:**
-<!-- If the baseline matched your trained model, your fine-tuning added
-     nothing — and that is a real finding, not a failure. Say it plainly. -->
-
-
+My prediction was wrong. `analysis` is the only label where the trained model did worse than the baseline (F1 0.000 vs 0.158): it called all 5 test `analysis` posts `hot_take`. The trained model's biggest win was `hot_take` (+0.367), the largest class. Its overall accuracy of 56.1% is barely above always guessing `hot_take` (22/41 = 53.7%), so the fine-tuning mostly learned the majority class. The baseline's low score is partly a problem with my definitions as prompts: with bare label names it scored 46.3% accuracy and a higher macro F1 (0.410) than the trained model (0.312), so my long definitions were worth about -27 points to this model. Fine-tuning helped on accuracy but has not yet learned the `analysis` boundary, which has only 22 training examples.
 
 ---
 
