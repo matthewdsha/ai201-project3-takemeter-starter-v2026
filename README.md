@@ -258,29 +258,36 @@ My prediction was wrong. `analysis` is the only label where the trained model di
 
 | Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
 |---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+| 1. Overall accuracy | ≥ 0.65 on all three seeds | 0.561 | 0.585 | 0.537 | Miss |
+| 2. Per-label F1 | every label ≥ 0.55 on all three seeds | analysis 0.000, hot_take 0.700, personal_account 0.235 | analysis 0.000, hot_take 0.733, personal_account 0.235 | analysis 0.000, hot_take 0.698, personal_account 0.000 | Miss |
+| 3. analysis↔hot_take confusion | analysis→hot_take ≤ 25% and hot_take→analysis ≤ 25% | 5/5 = 100%; 0/22 = 0% | 4/5 = 80%; 0/22 = 0% | 5/5 = 100%; 0/22 = 0% | Miss (analysis→hot_take) |
+| 4. Balance | no label > 55%, every label ≥ 30 rows, ≥ 150 rows | 144/272 = 52.9% max, min 31 | same file | same file | Pass |
+| 5. Agreement with staff | ≥ 21 of 30 | not run yet | not run yet | not run yet | Pending |
+
+Spread across seeds:
+
+| Measure | Seed 42 | Seed 7 | Seed 2024 | Spread |
+|---|---|---|---|---|
+| Overall accuracy | 0.561 | 0.585 | 0.537 | 0.049 |
+| Macro F1 | 0.312 | 0.323 | 0.233 | 0.090 |
+| F1 — `analysis` | 0.000 | 0.000 | 0.000 | 0.000 |
+| F1 — `hot_take` | 0.700 | 0.733 | 0.698 | 0.035 |
+| F1 — `personal_account` | 0.235 | 0.235 | 0.000 | 0.235 |
+
+Accuracy moved only 4.9 points, so the measure is stable, but it is stably bad. Always guessing `hot_take` scores 0.537 on the seed 2024 test split (22 of 41), which is exactly what that seed got, and its macro F1 of 0.233 is what a model that only predicts `hot_take` gets. Trained on Apple Silicon GPU (MPS).
 
 ### Confusion matrix
 
-<!-- ⚠️ TYPED AS A MARKDOWN TABLE. The notebook prints one ready to paste.
-     An image of a matrix earns nothing. -->
+Seed 42 (the same run as `results.json`).
 
-| true \ predicted |  |  |  |
+| true \ predicted | analysis | hot_take | personal_account |
 |---|---|---|---|
-| **** |  |  |  |
-| **** |  |  |  |
-| **** |  |  |  |
+| **analysis** | 0 | 5 | 0 |
+| **hot_take** | 0 | 21 | 1 |
+| **personal_account** | 0 | 12 | 2 |
 
 **My biggest off-diagonal number, and what it means:**
-<!-- Not "the model made mistakes" — WHICH boundary it didn't learn, and which
-     direction. "7 real analysis posts were called hot_take and only 3 went the
-     other way" is a direction, not just an error rate. -->
-
-
+12 real `personal_account` posts were called `hot_take` and only 1 real `hot_take` post went the other way, so the model did not learn that personal experience as the only evidence makes a post `personal_account`, and defaults to `hot_take`. The other failure is that it never predicted `analysis` at all: all 5 real `analysis` posts were called `hot_take`.
 
 ---
 
