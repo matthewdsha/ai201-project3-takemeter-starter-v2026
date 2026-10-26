@@ -346,26 +346,47 @@ With no disagreements, the report can't show a labelling inconsistency in how I 
 
 ## The Improvement
 
-**What I changed:**
+**What I changed:** Training epochs, from 3 to 10 (`EPOCHS` in the notebook). Nothing else: same learning rate (2e-5), batch size (16), seeds (42, 7, 2024), labels and splits, so each seed is scored on the same test posts as before. No rows were relabelled and none were added. Results are in `results_three_seeds_after.json`, and the before numbers are untouched in `results_three_seeds_before.json`.
 
-**Which diagnosis pointed at it:**
+**Which diagnosis pointed at it:** My criterion 1 diagnosis. In the before run, seed 2024's validation accuracy stayed at 0.537 for all three epochs while training loss only fell from about 0.98 to 0.89, and its matrix put every test post in the `hot_take` column. That looked like a model that had barely started learning, not one that had finished and failed. I did not pick relabelling because the agreement check found no rule applied two ways. I did not pick adding `analysis` examples because there is no pool of unused posts to draw from.
 
 ### Run Log — After
 
 | Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
 |---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+| 1. Overall accuracy | ≥ 0.65 on all three seeds | 0.659 | 0.732 | 0.732 | MET |
+| 2. Per-label F1 | every label ≥ 0.55 on all three seeds | analysis 0.000, hot_take 0.708, personal_account 0.690 | analysis 0.000, hot_take 0.800, personal_account 0.750 | analysis 0.333, hot_take 0.792, personal_account 0.714 | MISSED |
+| 3. analysis↔hot_take confusion | analysis→hot_take ≤ 25% and hot_take→analysis ≤ 25% | 5/5 = 100%; 0/22 = 0% | 3/5 = 60%; 0/22 = 0% | 3/5 = 60%; 0/22 = 0% | MISSED |
+| 4. Balance | no label > 55%, every label ≥ 30 rows, ≥ 150 rows | 52.9% max, min 31 | same file | same file | MET |
+| 5. Agreement with staff | ≥ 21 of 30 | 30/30 | n/a | n/a | MET |
 
-**Did it help, and how do I know:**
+Before and after side by side:
 
-<!-- If it didn't, say so. Relabelling that didn't help is a genuinely
-     interesting result and earns full credit. -->
+| Measure | Seed 42 before → after | Seed 7 before → after | Seed 2024 before → after |
+|---|---|---|---|
+| Overall accuracy | 0.561 → 0.659 | 0.585 → 0.732 | 0.537 → 0.732 |
+| Macro F1 | 0.312 → 0.466 | 0.323 → 0.517 | 0.233 → 0.613 |
+| F1 — `analysis` | 0.000 → 0.000 | 0.000 → 0.000 | 0.000 → 0.333 |
+| F1 — `hot_take` | 0.700 → 0.708 | 0.733 → 0.800 | 0.698 → 0.792 |
+| F1 — `personal_account` | 0.235 → 0.690 | 0.235 → 0.750 | 0.000 → 0.714 |
 
+Spread across seeds after: accuracy 0.073 (before 0.049), macro F1 0.147 (before 0.090).
 
+Confusion matrix after, seed 42:
+
+| true \ predicted | analysis | hot_take | personal_account |
+|---|---|---|---|
+| **analysis** | 0 | 5 | 0 |
+| **hot_take** | 0 | 17 | 5 |
+| **personal_account** | 0 | 4 | 10 |
+
+**Did it help, and how do I know:** Yes, mostly, but not on the label I was most worried about. Accuracy rose on every seed (by 0.098, 0.147 and 0.195) and criterion 1 went from MISSED to MET. `personal_account` is the biggest gain: its F1 went from 0.235, 0.235 and 0.000 to 0.690, 0.750 and 0.714, and in seed 42 it now gets 10 of 14 right where it got 2. `analysis` barely moved. It still scored F1 0.000 on seeds 42 and 7, and in seed 2024 it got 1 of 5 right, which is where its 0.333 comes from. Criterion 3 improved from 100% / 80% / 100% to 100% / 60% / 60% but is still MISSED. So training was a real part of the problem for `personal_account` and for overall accuracy, and not the main cause of the `analysis` failure, which fits that label having only 22 training posts.
+
+Things that qualify this:
+- Each test split has 41 posts, so one post is 2.4 points. Seed 42's 0.659 is 27 of 41, one post above the 0.65 line, so criterion 1 is met by the narrowest margin on that seed.
+- The spread across seeds got wider, not narrower (accuracy 0.073, macro F1 0.147), so the three numbers are less stable than before.
+- It cost something on `hot_take`: real `hot_take` posts called `personal_account` went from 1 to 5 in seed 42 (4 and 3 in the other seeds), where before the model almost never made that mistake.
+- I only tried 10 epochs, so I don't know whether 6 or 20 would do better, and I didn't tune anything on the test split beyond running this one change.
 
 ---
 
