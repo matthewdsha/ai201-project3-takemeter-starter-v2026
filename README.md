@@ -258,11 +258,11 @@ My prediction was wrong. `analysis` is the only label where the trained model di
 
 | Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
 |---|---|---|---|---|---|
-| 1. Overall accuracy | ≥ 0.65 on all three seeds | 0.561 | 0.585 | 0.537 | Miss |
-| 2. Per-label F1 | every label ≥ 0.55 on all three seeds | analysis 0.000, hot_take 0.700, personal_account 0.235 | analysis 0.000, hot_take 0.733, personal_account 0.235 | analysis 0.000, hot_take 0.698, personal_account 0.000 | Miss |
-| 3. analysis↔hot_take confusion | analysis→hot_take ≤ 25% and hot_take→analysis ≤ 25% | 5/5 = 100%; 0/22 = 0% | 4/5 = 80%; 0/22 = 0% | 5/5 = 100%; 0/22 = 0% | Miss (analysis→hot_take) |
-| 4. Balance | no label > 55%, every label ≥ 30 rows, ≥ 150 rows | 144/272 = 52.9% max, min 31 | same file | same file | Pass |
-| 5. Agreement with staff | ≥ 21 of 30 | 30/30 | n/a (labels, not a model) | n/a | Pass |
+| 1. Overall accuracy | ≥ 0.65 on all three seeds | 0.561 | 0.585 | 0.537 | MISSED |
+| 2. Per-label F1 | every label ≥ 0.55 on all three seeds | analysis 0.000, hot_take 0.700, personal_account 0.235 | analysis 0.000, hot_take 0.733, personal_account 0.235 | analysis 0.000, hot_take 0.698, personal_account 0.000 | MISSED |
+| 3. analysis↔hot_take confusion | analysis→hot_take ≤ 25% and hot_take→analysis ≤ 25% | 5/5 = 100%; 0/22 = 0% | 4/5 = 80%; 0/22 = 0% | 5/5 = 100%; 0/22 = 0% | MISSED |
+| 4. Balance | no label > 55%, every label ≥ 30 rows, ≥ 150 rows | 144/272 = 52.9% max, min 31 | same file | same file | MET |
+| 5. Agreement with staff | ≥ 21 of 30 | 30/30 | n/a (labels, not a model) | n/a | MET |
 
 Spread across seeds:
 
@@ -298,24 +298,25 @@ Seed 42 (the same run as `results.json`).
 
 | # | Criterion | Target | Verdict | How I decided |
 |---|---|---|---|---|
-| 1 |  |  |  |  |
-| 2 |  |  |  |  |
-| 3 |  |  |  |  |
-| 4 |  |  |  |  |
-| 5 |  |  |  |  |
+| 1 | Overall accuracy | ≥ 0.65 on all three seeds | MISSED | 0.561, 0.585, 0.537. Not one seed reached 0.65. |
+| 2 | Per-label F1 | every label ≥ 0.55 on all three seeds | MISSED | `analysis` F1 was 0.000 on all three seeds. `personal_account` was 0.235, 0.235 and 0.000. Only `hot_take` cleared 0.55 (0.700, 0.733, 0.698). |
+| 3 | `analysis` ↔ `hot_take` confusion | each direction ≤ 25% | MISSED | `analysis`→`hot_take` was 5/5, 4/5 and 5/5 (100%, 80%, 100%). `hot_take`→`analysis` was 0/22 each time, which passes, but both directions had to hold. |
+| 4 | Balance | no label > 55%, every label ≥ 30 rows, ≥ 150 rows | MET | 272 rows, `hot_take` 52.9%, `analysis` 31 rows. The file doesn't change between seeds. |
+| 5 | Agreement with staff | ≥ 21 of 30 | MET | 30 of 30 (100%). |
+
+I didn't revise any criterion. All five were measurable and I missed three of them, so the originals stand in `criteria.md`.
 
 **Diagnoses**
 
-<!-- For each miss: the cause, and how you know. The four common causes are:
-     too few examples for a label, a boundary you applied inconsistently, a
-     genuinely hard label pair, and a task the model can't reach from this
-     much data.
+**Criterion 1 (accuracy 0.561 / 0.585 / 0.537): the model hasn't learned much beyond always saying `hot_take`.** Every test split has 22 `hot_take` posts out of 41, so always guessing `hot_take` scores 0.537. Seed 2024 scored exactly that: its matrix has all 41 posts in the `hot_take` column, and its validation accuracy stayed at 0.537 after epochs 1, 2 and 3 while training loss only went from about 0.98 to 0.89. Seeds 42 and 7 are 1 to 2 posts better than that. I can't tell from this run whether the cause is the defaults (3 epochs, learning rate 2e-5) or a task that 190 training examples can't reach. I haven't tried more epochs or class weights, so I can't separate those two yet.
 
-     ⚠️ Use your agreement report as evidence. It is the only instrument you
-     have that can tell a LABELLING problem from a MODEL problem, and this
-     section is graded on whether you used it that way. -->
+**Criterion 2, `analysis` (F1 0.000 on all three seeds): too few examples.** `analysis` is 22 of the 190 training posts (about 11%) against 100 for `hot_take`, and the model never predicted it, so there is no `analysis` column in any of the three matrices. Precision and recall are both 0, not just low. The agreement check doesn't point at my labeling here: I matched staff on 30 of 30, so I applied a written rule I didn't write the way its authors did, including the "does the fact carry the argument" rule. The zero-shot baseline with bare label names reached `analysis` F1 0.333 on the same posts, so the signal is reachable and my fine-tuned model is not getting it.
 
+**Criterion 2, `personal_account` (F1 0.235 / 0.235 / 0.000): a hard label pair, and the model leans one way.** In seed 42, 12 of 14 real `personal_account` posts were called `hot_take` and only 1 real `hot_take` post went the other way. In seeds 7 and 2024 it was 12 and 14 of 14. This label has 68 training posts, so a lack of examples alone doesn't explain recall of 2/14, 2/14 and 0/14. Both labels are posts with no checkable support, and the difference is whether the author's own experience is the evidence. The agreement check can't rule out a labeling problem on this pair, for two reasons. The staff set uses a different taxonomy with no `personal_account` label, so it never tested this boundary. And 252 of my 272 labels were pre-labelled by an AI and then reviewed by me, so my agreement with staff says little about whether those rows are consistent with each other.
 
+**Criterion 3 (`analysis`→`hot_take` at 100% / 80% / 100%): the same cause as `analysis` above, not a hard `analysis`/`hot_take` boundary.** The two directions are very uneven: `hot_take`→`analysis` was 0 of 22 on every seed, so the model isn't confusing the two, it is not predicting `analysis` at all. My criterion assumed most errors would be on this boundary. The biggest error is actually `personal_account`→`hot_take`.
+
+**What I'd try next, in order:** more epochs or class weights, to see whether the model starts predicting `analysis` at all. Then relabelling a sample of the AI-pre-labelled `personal_account` and `hot_take` rows cold, to measure whether my labels are consistent on the pair the model fails.
 
 ---
 
