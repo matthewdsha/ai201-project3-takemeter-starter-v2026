@@ -267,8 +267,10 @@ My prediction was wrong. `analysis` is the only label where the trained model di
 | 1. Overall accuracy | ≥ 0.65 on all three seeds | 0.561 | 0.585 | 0.537 | MISSED |
 | 2. Per-label F1 | every label ≥ 0.55 on all three seeds | analysis 0.000, hot_take 0.700, personal_account 0.235 | analysis 0.000, hot_take 0.733, personal_account 0.235 | analysis 0.000, hot_take 0.698, personal_account 0.000 | MISSED |
 | 3. analysis↔hot_take confusion | analysis→hot_take ≤ 25% and hot_take→analysis ≤ 25% | 5/5 = 100%; 0/22 = 0% | 4/5 = 80%; 0/22 = 0% | 5/5 = 100%; 0/22 = 0% | MISSED |
-| 4. Balance | no label > 55%, every label ≥ 30 rows, ≥ 150 rows | 144/272 = 52.9% max, min 31 | same file | same file | MET |
-| 5. Agreement with staff | ≥ 21 of 30 | 30/30 | n/a (labels, not a model) | n/a | MET |
+| 4. Balance | no label > 55%, every label ≥ 30 rows, ≥ 150 rows | 144/272 = 52.9% max, min 31 | 52.9% max, min 31 | 52.9% max, min 31 | MET |
+| 5. Agreement with staff | ≥ 21 of 30 | 30/30 | 30/30 | 30/30 | MET |
+
+Criteria 4 and 5 don't depend on the seed: criterion 4 is measured on the whole `labels.csv` before any split, and criterion 5 is one comparison of my 30 staff-set labels against staff's, so the same value is repeated in every seed column.
 
 Spread across seeds:
 
@@ -343,7 +345,7 @@ I didn't revise any criterion. All five were measurable and I missed three of th
 
 **Disagreements**
 
-There were none, so there is nothing to adjudicate and no posts to sort into piles (a), (b) and (c).
+There were none (`agreement_results.json` records 30 compared, 30 agreed, and an empty disagreements list), so there is nothing to adjudicate and no posts to sort into piles (a), (b) and (c).
 
 **What the pattern in my disagreements tells me:**
 With no disagreements, the report can't show a labelling inconsistency in how I applied a rule I didn't write. That clears the labelling as the cause of the model's failure on `analysis`, but I don't read 100% as proof my rules are tight. The set was easier than staff's note suggests: the `analysis` and `hot_take` halves split cleanly on whether a figure carries the argument (the sp_014 "3% since the shoe rules changed" post is almost the staff taxonomy's own example of a decorative statistic), and the ten `reaction` posts are short, present-tense and about the writer. It only has 30 posts and none sat on the rule 2 or rule 3 boundaries, so it tests the easy cases more than the hard ones. The hard boundary in my own taxonomy, `analysis` vs `personal_account`, is not tested here at all.
@@ -363,8 +365,10 @@ With no disagreements, the report can't show a labelling inconsistency in how I 
 | 1. Overall accuracy | ≥ 0.65 on all three seeds | 0.659 | 0.732 | 0.732 | MET |
 | 2. Per-label F1 | every label ≥ 0.55 on all three seeds | analysis 0.000, hot_take 0.708, personal_account 0.690 | analysis 0.000, hot_take 0.800, personal_account 0.750 | analysis 0.333, hot_take 0.792, personal_account 0.714 | MISSED |
 | 3. analysis↔hot_take confusion | analysis→hot_take ≤ 25% and hot_take→analysis ≤ 25% | 5/5 = 100%; 0/22 = 0% | 3/5 = 60%; 0/22 = 0% | 3/5 = 60%; 0/22 = 0% | MISSED |
-| 4. Balance | no label > 55%, every label ≥ 30 rows, ≥ 150 rows | 52.9% max, min 31 | same file | same file | MET |
-| 5. Agreement with staff | ≥ 21 of 30 | 30/30 | n/a | n/a | MET |
+| 4. Balance | no label > 55%, every label ≥ 30 rows, ≥ 150 rows | 52.9% max, min 31 | 52.9% max, min 31 | 52.9% max, min 31 | MET |
+| 5. Agreement with staff | ≥ 21 of 30 | 30/30 | 30/30 | 30/30 | MET |
+
+Criteria 4 and 5 don't depend on the seed: criterion 4 is measured on the whole `labels.csv` before any split, and criterion 5 is one comparison of my 30 staff-set labels against staff's, so the same value is repeated in every seed column.
 
 Before and after side by side:
 
