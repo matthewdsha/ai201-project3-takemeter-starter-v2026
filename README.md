@@ -221,6 +221,12 @@ No label is above 70%. `analysis` is the thin one: with about 31 examples, only 
 **Pre-labelling disclosure:**
 252 of the 272 rows were pre-labelled by an AI tool (Claude) using the definitions in the Label Taxonomy section, and are marked "pre-labelled" in the note column. The AI read the opening of each post plus its numbers and links, not always the full text. I reviewed every one of those 252 rows and agreed with the label. The other 20 rows are my cold labels, written on paper with no AI and no tools before I saw any AI label, and are marked "cold".
 
+**Moment 3 (unit 6)**
+
+- *What I asked for:* After the three-seed run, I had Claude read the confusion matrices and say where the model was going wrong.
+- *What came back:* It pointed out that the model never predicts `analysis` (the `analysis` column is 0 on every seed), and that my biggest error was `personal_account` called `hot_take` (12 of 14 on seed 42), not the `analysis`/`hot_take` boundary my criterion 3 assumed.
+- *What I changed:* I wrote that into my diagnoses, that criterion 3's miss is the same problem as criterion 2 and not a hard boundary. I left all five criteria as written.
+
 <!-- ═══════════════════════ UNIT 6 — THE TEST ═══════════════════════
 
      Don't fill these in during unit 5.
@@ -392,15 +398,12 @@ Things that qualify this:
 
 ## What's Still Broken
 
-<!-- For each criterion still missed: what you'd do, and why you stopped. -->
+**Criterion 2 (every label's F1 ≥ 0.55):** still MISSED, entirely because of `analysis`: F1 0.000, 0.000 and 0.333 across the three seeds, and 1 of 15 real `analysis` posts right across the three test sets. `personal_account` and `hot_take` both cleared 0.55 on every seed after the retrain. What I'd do next is add more `analysis` posts (it has 22 of 190 training posts) or weight that class in the loss, then check whether my `analysis` rule separates checkable facts from numbers nobody outside the post can verify. I stopped because the assignment allows one change, and more epochs was the one my diagnosis pointed at.
 
+**Criterion 3 (each direction ≤ 25%):** still MISSED. `hot_take`→`analysis` is 0 of 22 on every seed, which passes, but `analysis`→`hot_take` is 5/5, 3/5 and 3/5 (100%, 60%, 60%). It has the same cause as criterion 2, because the model almost never predicts `analysis`, so the next step is the same one. I stopped for the same reason.
 
-
-**The gap between what I meant my labels to capture and what the model
-learned:**
-<!-- Two sentences. Your confusion matrix is the evidence. -->
-
-
+**The gap between what I meant my labels to capture and what the model learned:**
+I meant `analysis` to mean a post whose argument rests on a fact someone else could check, but in the seed 42 matrix all 5 real `analysis` posts were called `hot_take` and no post was ever called `analysis`. What the model did learn after more training is the `personal_account` boundary (10 of 14 right), so it can tell a writer's own experience from an unsupported claim, but not yet an unsupported claim from a checkable one.
 
 <!-- ═════════════════════════════════════════════════════════════════════
 
